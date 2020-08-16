@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+Home Page
+{% endblock head_title %}
+
+{% block content %}
+<div class='row text-center'>
+    <div class='col'>
+        <h3>Welcome to tweetme2 </h3>
+    </div>
+</div>
+
+<div class='row' id = "tweets">
+loading...
+</div>
+
+<script>
+    const tweetsElement = document.getElementById("tweets");
+
+    const xhr = new XMLHttpRequest();
+    const method = 'GET';
+    const url = "/tweets";
+    const responseType = "json";
+
+    function likeBtn(){
+        return "<button class='btn btn-primary'>Like</button>"
+    }
+
+    function formatTweetElement(tweet){
+        var formattedTweet = "<div class='col-12 col-md-10 mx-auto border rounded py-3 mb-4 tweet' id = 'tweet-"+tweet.id+"'>" + 
+        "<p>" + tweet.content +"</p><div class='btn-group'>"+likeBtn()+"</div></div>";
+        return formattedTweet;
+    }
+
+    xhr.responseType = responseType;
+    xhr.open(method, url)
+    xhr.onload = function(){
+        const serverResponse = xhr.response; //serverResponse is Json data
+        // listedItems is response in data dictionary which is an array of dictionary
+        const listedItems = serverResponse.response;
+        var finalTweetStr = "";
+        var i; 
+        //concatenate all tweets
+        for (i = 0; i < listedItems.length; i++){
+            var tweetObj = listedItems[i]
+            var currentItem = formatTweetElement(tweetObj);
+            finalTweetStr += currentItem;
+        }
+        tweetsElement.innerHTML = finalTweetStr;
+    }
+    xhr.send()//?
+</script>
+{% endblock content%}
